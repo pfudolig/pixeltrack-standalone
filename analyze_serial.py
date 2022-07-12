@@ -62,8 +62,7 @@ def plotDF(dataframe):
     df_time = dataframe['time']
     df_throughput = dataframe['throughput']
 
-    plt.bar(df_streams,df_time)
-    plt.xticks()
+    plt.scatter(df_streams,df_time,color=c)
     plt.xlabel('Amount of Streams')
     plt.ylabel('Time of 5000 Events (s)') 
     plt.title('Processing Time for ' + str(max(df_streams)) + ' Streams Ran Concurrently (Serial)') 
