@@ -27,7 +27,7 @@ def storeByStream(nStreams,maxEvents):
     events = []
 
     for i in range(1,nStreams+1): #exclude 0
-        cmd = "./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+        cmd = "numactl -N 0 ./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
         p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         output = p.communicate()
         mystring = str(output)
@@ -39,6 +39,7 @@ def storeByStream(nStreams,maxEvents):
 
     d = {'nStreams': streams, 'time': time, 'throughput': throughput, 'nEvents': events}
     df = pd.DataFrame(data=d)
+    df.to_csv(('df_' + nStreams + 'streams_' + maxEvents + 'events.csv'))
     return(df)
 
 user_output = storeByStream(nStreams,MaxEvents)
@@ -111,34 +112,3 @@ def storeByEvent(maxEvents):
     return(df)
 
 print(storeByEvent(maxEvents))'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#make a program that runs make serial for several different types of events
-#def runSerial(serial):
-#    df = pandas.DataFrame()
-
-#make function that plots outputs dep on # of events being passed through
-#have to worry about user security issues?
-#child process
