@@ -20,7 +20,7 @@ else:
 if args.nEvents:
     maxEvents = args.nEvents
 else:
-    maxEvents = 5
+    maxEvents = 10000
 
 
 def storeByStream(nStreams,maxEvents):
@@ -39,6 +39,7 @@ def storeByStream(nStreams,maxEvents):
             output = p.communicate()
             mystring = str(output)
             parts = mystring.split(' ')
+
             time.append(float(parts[27]))
             throughput.append(float(parts[30]))
             streams.append(float(parts[15]))
@@ -84,25 +85,28 @@ def plotThroughput(dataframe,std='NA'):
     events_val = dataframe['nEvents'].iat[0]
 
     if std == 'NA':
-        plt.plot(df_streams,df_throughput,'o',linestyle='solid')
         plt.style.use(hep.style.CMS)
-        plt.xticks(df_streams)
-        plt.xlabel('Amount of Streams')
+        plt.figure(figsize = (20,10))
+        plt.plot(df_streams,df_throughput,'o',linestyle='solid',label='Alpaka Serial')
+        plt.legend(loc='lower right',fontsize='xx-small',frameon=True,shadow=True)
+        plt.xticks(streams_pick)
+        plt.xlabel('Number of Threads/Stream')
         plt.ylabel('Throughput (events/s)') 
-        plt.title('Throughput of Alpaka Serial')
+        plt.title('Throughput vs. Number of Threads')
         plt.show() 
         plt.savefig(alpakapath + 'alpsthru_' + str(max(df_streams)) + 's_' + str(events_val) + 'e.png')
         plt.close()
 
     if std == 'std':
         plt.style.use(hep.style.CMS)
-        plt.figure(figsize = (10,5))
-        plt.plot(streams_pick,ave_pick,'ro-',linestyle='solid')
+        plt.figure(figsize = (20,10))
+        plt.plot(streams_pick,ave_pick,'ro-',linestyle='solid',label='Alpaka Serial')
+        plt.legend(loc='lower right',fontsize='xx-small',frameon=True,shadow=True)
         plt.xticks(streams_pick,fontsize=16)
         plt.errorbar(streams_pick,ave_pick,yerr=std_pick,fmt='b',ecolor='k',capsize=20, elinewidth=1,markeredgewidth=1)
-        plt.xlabel('Amount of Streams',fontsize=16)
-        plt.ylabel('Average Throughput (events/s)',fontsize=16) 
-        plt.title('Averages and Standard Deviations of Throughputs for Alpaka Serial',fontsize=20) 
+        plt.xlabel('Number of Threads/Stream',fontsize=16)
+        plt.ylabel('Throughput (events/s)',fontsize=16) 
+        plt.title('PixelTrack-Standalone Performance',fontsize=20) 
         plt.show() 
         plt.savefig(alpakapath + '4ave_alpsthru_' + str(max(df_streams)) + 's_' + str(events_val) + 'e.png')
         plt.close()
@@ -116,22 +120,3 @@ plotThroughput(user_output,std='std')
 
 
 
-
-'''
-def plotTime(dataframe):
-    #Plot processing time as a function of amount of streams
-    df_streams = dataframe['nStreams']
-    df_time = dataframe['time']
-    df_throughput = dataframe['throughput']
-    events_val = dataframe['nEvents'].iat[0]
-
-    plt.plot(df_streams,df_time,'o',linestyle='solid')
-    plt.xlabel('Amount of Streams')
-    plt.ylabel('Time of ' + str(events_val) + ' Events (s)') 
-    plt.title('Processing Time of Alpaka Serial') 
-
-    plt.show() 
-    plt.savefig(alpakapath + 'alps_time_' + str(max(df_streams)) + 'streams_' + str(events_val) + 'events.png')
-    plt.close()
-    
-plotTime(user_output)'''
