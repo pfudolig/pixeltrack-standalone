@@ -1,9 +1,11 @@
-import matplotlib.pyplot as plt
+import numpy as np
 
-x = [0,1,2,3,4]
-y = [5,6,7,8,9]
+big_time = []
+for i in range(7):
+    time = []
+    for j in range(4):
+        time.append(j)
+    big_time.append(time)
+print(big_time)
 
-plt.plot(x,y,'o',linestyle='solid')
-plt.show()
-plt.savefig('test.png')
-plt.close()
+#f

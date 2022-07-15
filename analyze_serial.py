@@ -4,6 +4,8 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
+import statistics
+import mplhep as hep
 
 serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
 
@@ -14,44 +16,107 @@ args = parser.parse_args()
 if args.nstreams:
     nStreams = args.nstreams
 else:
-    nStreams = 10
+    nStreams = 20
 if args.nEvents:
     maxEvents = args.nEvents
 else:
-    maxEvents = 5
+    maxEvents = 10000
 
 
 def storeByStream(nStreams,maxEvents):
     #Loop over various amount of streams for set number of events to record processing time and throughput
-    time = []
-    throughput = []
-    streams = []
-    events = []
+    big_time, big_thru, big_str = [], [], []
+    big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
+    big_ev = []
 
-    for i in range(1,nStreams+1): #exclude 0
-        cmd = "numactl -N 0 ./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
-        p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        output = p.communicate()
-        mystring = str(output)
-        parts = mystring.split(' ')
-        time.append(float(parts[13]))
-        throughput.append(float(parts[16]))
-        streams.append(float(parts[5]))
-        events.append(maxEvents)
+    for i in range(1,nStreams+1):
+        time = []
+        throughput = []
+        streams = []
+        for j in range(4):
+            cmd = "numactl -N 0 ./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+            p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            output = p.communicate()
+            mystring = str(output)
+            parts = mystring.split(' ')
+            time.append(float(parts[13]))
+            throughput.append(float(parts[16]))
+            streams.append(float(parts[5]))
 
-    d = {'nStreams': streams, 'time': time, 'throughput': throughput, 'nEvents': events}
+        time_std = statistics.stdev(time)
+        thru_std = statistics.stdev(throughput)
+        time_ave = statistics.mean(time)
+        thru_ave = statistics.mean(throughput)
+
+        streamval = streams[0]
+        big_time.append(time)
+        big_thru.append(throughput)
+        big_str.append(streamval)
+        big_ev.append(maxEvents)
+
+        big_time_std.append(time_std)
+        big_thru_std.append(thru_std)
+        big_time_ave.append(time_ave)
+        big_thru_ave.append(thru_ave)
+
+    d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    df.to_csv((serialpath + 'serial_' + str(nStreams) + 'streams_' + str(maxEvents) + 'events.csv'))
+    #df.to_csv('big.csv')
+    df.to_csv((serialpath + '4serial_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'))
     return(df)
     #print(df)
-#user_output = storeByStream(nStreams,maxEvents)
+
+user_output = storeByStream(nStreams,maxEvents)
 #print(user_output)
 
+
+def plotThroughput(dataframe,std='NA'):
+    #Plot throughput as a function of amount of streams
+    df_streams = dataframe['nStreams']
+    df_throughput = dataframe['throughput']
+    streams_pick = [df_streams[0],df_streams[1],df_streams[3],df_streams[7],df_streams[11],df_streams[15],df_streams[19]]
+    thru_std = dataframe['tput_std']
+    std_pick = [thru_std[0],thru_std[1],thru_std[3],thru_std[7],thru_std[11],thru_std[15],thru_std[19]]
+    thru_ave = dataframe['tput_ave']
+    ave_pick = [thru_ave[0],thru_ave[1],thru_ave[3],thru_ave[7],thru_ave[11],thru_ave[15],thru_ave[19]]
+    events_val = dataframe['nEvents'].iat[0]
+
+    if std == 'NA':
+        plt.plot(df_streams,df_throughput,'o',linestyle='solid')
+        plt.style.use(hep.style.CMS)
+        plt.xticks(df_streams)
+        plt.xlabel('Amount of Streams')
+        plt.ylabel('Throughput (events/s)') 
+        plt.title('Throughputs of Serial Library')
+        plt.show() 
+        plt.savefig(serialpath + 'serthru_' + str(max(df_streams)) + 's_' + str(events_val) + 'e.png')
+        plt.close()
+
+    if std == 'std':
+        plt.style.use(hep.style.CMS)
+        plt.figure(figsize = (10,5))
+        plt.plot(streams_pick,ave_pick,'ro-',linestyle='solid')
+        plt.xticks(streams_pick,fontsize=16)
+        plt.errorbar(streams_pick,ave_pick,yerr=std_pick,fmt='b',ecolor='k',capsize=20, elinewidth=1,markeredgewidth=1)
+        plt.xlabel('Amount of Streams',fontsize=16)
+        plt.ylabel('Average Throughput (events/s)',fontsize=16) 
+        plt.title('Averages and Standard Deviations of Throughputs for Serial Library',fontsize=20) 
+        plt.show() 
+        plt.savefig(serialpath + '4ave_serthru_' + str(max(df_streams)) + 's_' + str(events_val) + 'e.png')
+        plt.close()
+
+plotThroughput(user_output,std='std')
+
+
+
+
+
+
+'''
 def plotTime(dataframe):
     #Plot processing time as a function of amount of streams
     df_streams = dataframe['nStreams']
     df_time = dataframe['time']
-    df_throughput = dataframe['throughput']
     events_val = dataframe['nEvents'].iat[0]
 
     plt.plot(df_streams,df_time,'o',linestyle='solid')
@@ -62,22 +127,4 @@ def plotTime(dataframe):
     plt.show() 
     plt.savefig(serialpath + 'time_' + str(max(df_streams)) + 'streams_' + str(events_val) + 'events.png')
     plt.close()
-#plotTime(user_output)
-
-def plotThroughput(dataframe):
-    #Plot throughput as a function of amount of streams
-    df_streams = dataframe['nStreams']
-    df_time = dataframe['time']
-    df_throughput = dataframe['throughput']
-    events_val = dataframe['nEvents'].iat[0]
-
-    plt.plot(df_streams,df_throughput,'o',linestyle='solid')
-    plt.xlabel('Amount of Streams')
-    plt.ylabel('Throughput (events/s)') 
-    plt.title('Throughput of Serial') 
-
-    plt.show() 
-    plt.savefig(serialpath + 'throughput_' + str(max(df_streams)) + 'streams_' + str(events_val) + 'events.png')
-    plt.close()
-#plotThroughput(user_output)
-
+#plotTime(user_output)'''
