@@ -7,7 +7,7 @@ import argparse
 import statistics
 import mplhep as hep
 
-alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
+alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/alpaka_results/'
 
 parser = argparse.ArgumentParser(description='Alpaka Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of concurrent events')

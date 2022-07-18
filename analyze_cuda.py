@@ -7,7 +7,7 @@ import argparse
 import statistics
 import mplhep as hep
 
-cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/'
+cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/cuda_results/'
 
 parser = argparse.ArgumentParser(description='Cuda Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of concurrent events')

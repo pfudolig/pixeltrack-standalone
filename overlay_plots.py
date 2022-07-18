@@ -23,10 +23,10 @@ else:
     maxEvents = 10000'''
 
 
-alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
-serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
-cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/'
-respath = '/data2/user/pfudolig/pixeltrack-standalone/results/'
+alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/alpaka_results/'
+serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/serial_results/'
+cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/cuda_results/'
+respath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/'
 df_alps = pd.read_csv(alpakapath + '4alps_20s_5e.csv')
 df_ser = pd.read_csv(serialpath + '4serial_20s_5e.csv')
 df_cuda = pd.read_csv(cudapath + '4cuda_20s_5e.csv')

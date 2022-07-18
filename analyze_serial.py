@@ -7,7 +7,7 @@ import argparse
 import statistics
 import mplhep as hep
 
-serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
+serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/serial_results/'
 
 parser = argparse.ArgumentParser(description='Serial Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of concurrent events')
