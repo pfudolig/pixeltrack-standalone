@@ -72,7 +72,7 @@ user_output = storeByStream(nStreams,maxEvents)
 
 
 
-
+'''
 def plotThroughput(dataframe,std='NA'):
     #Plot throughput as a function of amount of streams
     df_streams = dataframe['nStreams']
@@ -112,7 +112,7 @@ def plotThroughput(dataframe,std='NA'):
         plt.close()
 
 plotThroughput(user_output,std='std')
-
+'''
 
 
 
