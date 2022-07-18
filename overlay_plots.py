@@ -31,6 +31,22 @@ df_alps = pd.read_csv(alpakapath + '4alps_20s_5e.csv')
 df_ser = pd.read_csv(serialpath + '4serial_20s_5e.csv')
 df_cuda = pd.read_csv(cudapath + '4cuda_20s_5e.csv')
 
+def ratio_and_std(dataframe1,dataframe2):
+    big_ratio, big_std = [], []
+    thru_ave1 = dataframe1['tput_ave']
+    thru_ave2 = dataframe2['tput_ave']
+    thru1 = dataframe1['throughput']
+    thru2 = dataframe2['throughput']
+    for i in range(len(thru_ave1)):
+    #    ratio = thru2 / thru1
+    #    print(ratio)
+        std_ratio = statistics.stdev(ratio)
+        #big_std.append(std_ratio)
+        #print(std_ratio)
+    #print(big_std)
+ratio_and_std(df_ser,df_cuda)
+
+'''
 def overlayThru(dataframe1,df1name,dataframe2,df2name,dataframe3,df3name):
     #Usually df1=serial, df2=cuda, df3=alpakaserial
     df_streams1 = dataframe1['nStreams']
@@ -97,4 +113,4 @@ def overlayThru(dataframe1,df1name,dataframe2,df2name,dataframe3,df3name):
     plt.close()
 
 
-overlayThru(df_ser,'Serial',df_cuda,'CUDA',df_alps,'AlpakaSerial')
+overlayThru(df_ser,'Serial',df_cuda,'CUDA',df_alps,'AlpakaSerial')'''

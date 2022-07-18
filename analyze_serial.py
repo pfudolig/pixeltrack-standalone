@@ -34,7 +34,7 @@ def storeByStream(nStreams,maxEvents):
         throughput = []
         streams = []
         for j in range(4):
-            cmd = "numactl -N 0 ./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+            cmd = "numactl -N 0 ./serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
             p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             output = p.communicate()
             mystring = str(output)
@@ -65,6 +65,8 @@ def storeByStream(nStreams,maxEvents):
     df.to_csv((serialpath + '4serial_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'))
     return(df)
     #print(df)
+
+
 
 user_output = storeByStream(nStreams,maxEvents)
 #print(user_output)
