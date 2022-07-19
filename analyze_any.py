@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import argparse
 import statistics
 import mplhep as hep
+import datetime
+
+logfile = '/data2/user/pfudolig/pixeltrack-standalone/mylog.txt'
+timestamp = datetime.datetime.now()
 
 alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
 serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
@@ -147,12 +151,19 @@ def storeAny(nStreams,maxEvents,cmd):
             big_thru_std.append(thru_std)
             big_time_ave.append(time_ave)
             big_thru_ave.append(thru_ave)
-    check = [30,31,32,33,34,35,36,37,38,39]
-    d = {'check': check,'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
+    d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
     #df.to_csv('big.csv')
-    df.to_csv((path + 'avethrudata_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'))
-    #return(df)
+    csv_title = path + 'avethrudata_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    df.to_csv(csv_title)
+    with open(logfile,"a") as myfile:
+        myfile.write('\n')
+        myfile.write(str(timestamp))
+        myfile.write('\n')
+        myfile.write('\t' + cmd)
+        myfile.write('\n')
+        myfile.write('\t' + csv_title)
+    return(df)
     #print(df)
 
 storeAny(nStreams,maxEvents,cmd)
