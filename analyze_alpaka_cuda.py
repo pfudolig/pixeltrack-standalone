@@ -8,8 +8,8 @@ import statistics
 import mplhep as hep
 import datetime
 
-alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/alpaka_results/'
-logfile = '/data2/user/pfudolig/pixeltrack-standalone/mylog.txt'
+alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/'
+logfile = '/data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/alpc_log.txt'
 timestamp = datetime.datetime.now()
 
 parser = argparse.ArgumentParser(description='Alpaka Cuda Information')
@@ -70,15 +70,15 @@ def storeByStream(nStreams,maxEvents,gpu):
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
     #df.to_csv('big.csv')
-    csv_title = alpakapath + '4alpc' + str(gpu) + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    csv_title = alpakapath + 'csv/4alpc' + str(gpu) + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
         myfile.write(str(timestamp))
         myfile.write('\n')
-        myfile.write('\t' + cmd)
+        myfile.write('\t' + 'Input: ' + cmd)
         myfile.write('\n')
-        myfile.write('\t' + csv_title)
+        myfile.write('\t' + 'Output: ' + csv_title)
     return(df)
     #print(df)
 

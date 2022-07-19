@@ -8,8 +8,8 @@ import statistics
 import mplhep as hep
 import datetime
 
-serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results_VS/serial_results/'
-logfile = '/data2/user/pfudolig/pixeltrack-standalone/mylog.txt'
+serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
+logfile = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/serial_log.txt'
 timestamp = datetime.datetime.now()
 
 parser = argparse.ArgumentParser(description='Serial Information')
@@ -65,15 +65,15 @@ def storeByStream(nStreams,maxEvents):
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
     #df.to_csv('big.csv')
-    csv_title = serialpath + '4serial_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    csv_title = serialpath + 'csv/4serial_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
         myfile.write(str(timestamp))
         myfile.write('\n')
-        myfile.write('\t' + cmd)
+        myfile.write('\t' + 'Input: ' + cmd)
         myfile.write('\n')
-        myfile.write('\t' + csv_title)
+        myfile.write('\t' + 'Output: ' + csv_title)
     return(df)
     #print(df)
 
