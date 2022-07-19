@@ -21,3 +21,9 @@ Fudolig PixelTrack-Standalone Command Log
 2022-07-19 12:24:11.331522
 	CUDA_VISIBLE_DEVICES=3 numactl -N 0 ./alpaka --cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 10000
 	/data2/user/pfudolig/pixeltrack-standalone/results_VS/alpaka_results/4alpc3_20s_10000e.csv
+2022-07-19 13:20:38.302815
+	CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 10000
+	/data2/user/pfudolig/pixeltrack-standalone/results_VS/cuda_results/4cuda1_20s_10000e.csv
+2022-07-19 13:21:05.413627
+	CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./alpaka --cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 10000
+	/data2/user/pfudolig/pixeltrack-standalone/results_VS/alpaka_results/4alpc1_20s_10000e.csv
