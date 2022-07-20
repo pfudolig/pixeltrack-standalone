@@ -21,3 +21,7 @@ PixelTrack-Standalone Multiple Plots Command Log
 	results/multiple_results/SerialAlpakaSerial_None_10000e.png
 2022-07-20 11:10:59.428227
 	results/multiple_results/SerialCUDAAlpakaSerial_10000e.png
+2022-07-20 12:00:47.213502
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 12:00:47.213502
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
