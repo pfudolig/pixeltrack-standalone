@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser(description='Alpaka Cuda Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of concurrent events')
 parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process')
 parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin')
+parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (args greater than 2 pass as None)')
 args = parser.parse_args()
 if args.nstreams:
     nStreams = args.nstreams
@@ -29,9 +30,20 @@ if args.gpu:
     gpu = args.gpu
 else:
     gpu = 1
+if args.pin:
+    socket = args.pin
+else:
+    socket = 3
+
+if nStreams > 20:
+    raise ValueError('Only 20 cores on this machine')
+if socket == 1 or socket == 2:
+    nThreads = nStreams
+else:
+    nThreads = 40
 
 
-def storeByStream(nStreams,maxEvents,gpu):
+def storeByStream(nStreams,maxEvents,gpu,socket,nThreads):
     #Loop over various amount of streams for set number of events to record processing time and throughput
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
@@ -42,7 +54,13 @@ def storeByStream(nStreams,maxEvents,gpu):
         throughput = []
         streams = []
         for j in range(4):
-            cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu) + " numactl -N 0 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+            gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
+            if socket > 2:
+                cmd = gpu_cmd + " ./alpaka --cuda --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+            if socket == 1:
+                cmd = gpu_cmd + " numactl -N 0 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+            if socket == 2:
+                cmd = gpu_cmd + " numactl -N 1 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)            
             p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             output = p.communicate()
             mystring = str(output)
@@ -69,7 +87,6 @@ def storeByStream(nStreams,maxEvents,gpu):
 
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    #df.to_csv('big.csv')
     csv_title = alpakapath + 'csv/4alpc' + str(gpu) + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
@@ -80,7 +97,5 @@ def storeByStream(nStreams,maxEvents,gpu):
         myfile.write('\n')
         myfile.write('\t' + 'Output: ' + csv_title)
     return(df)
-    #print(df)
 
-user_output = storeByStream(nStreams,maxEvents,gpu)
-#print(user_output)
+user_output = storeByStream(nStreams,maxEvents,gpu,socket,nThreads)

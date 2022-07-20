@@ -1,2 +1,6 @@
 Serial Command Log
 
+
+2022-07-20 15:58:33.412536
+	Input: ./serial --numberOfThreads 40 --numberOfStreams 20 --maxEvents 5
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_pin3_5e.csv

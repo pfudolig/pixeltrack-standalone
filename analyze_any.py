@@ -8,13 +8,16 @@ import statistics
 import mplhep as hep
 import datetime
 
-logfile = '/data2/user/pfudolig/pixeltrack-standalone/mylog.txt'
+serlog = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/serial_log.txt'
+cudalog = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/cuda_log.txt'
+alpslog = '/data2/user/pfudolig/pixeltrack-standalone/results/alps_results/alps_log.txt'
+alpclog = '/data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/alpc_log.txt'
 timestamp = datetime.datetime.now()
 
-alpakapath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
-serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
-cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/'
-respath = '/data2/user/pfudolig/pixeltrack-standalone/results/'
+alpspath = '/data2/user/pfudolig/pixeltrack-standalone/results/alps_results/csv/'
+alpcpath = '/data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/csv/'
+serialpath = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/'
+cudapath = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/'
 
 parser = argparse.ArgumentParser(description='Serial Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run')
@@ -23,7 +26,10 @@ parser.add_argument('--serial', '--Serial', dest='serial', help='Pass Serial Lib
 parser.add_argument('--cuda', '--Cuda', '--CUDA', dest='cuda', help='Pass CUDA Library, can type any argument')
 parser.add_argument('--alpakaserial', '--AlpakaSerial',dest='alps', help='Pass Alpaka Serial Library, can type any argument')
 parser.add_argument('--alpakacuda', '--AlpakaCuda', '--AlpakaCUDA', dest='alpc', help='Pass Alpaka CUDA Library, can type any argument')
+parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin')
+parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (args greater than 2 pass as None)')
 args = parser.parse_args()
+
 if args.nstreams:
     nStreams = args.nstreams
 else:
@@ -42,8 +48,24 @@ if args.alps:
 if args.alpc:
     cmd = 'alpc_cmd'
 
+if args.gpu:
+    gpu = args.gpu
+else:
+    gpu = 1
+if args.pin:
+    socket = args.pin
+else:
+    socket = 3
 
-def storeAny(nStreams,maxEvents,cmd):
+if nStreams > 20:
+    raise ValueError('Only 20 cores on this machine')
+if socket == 1 or socket == 2:
+    nThreads = nStreams
+else:
+    nThreads = 40
+
+
+def storeAny(nStreams,maxEvents,cmd,gpu,socket,nThreads):
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
     big_ev = []
@@ -53,9 +75,16 @@ def storeAny(nStreams,maxEvents,cmd):
         throughput = []
         streams = []
         if cmd == 'serial_cmd':
-            path = '/data2/user/pfudolig/pixeltrack-standalone/results/serial_results/'
+            path = serialpath
+            logfile = serlog
             for j in range(4):
-                do = "numactl -N 0 ./serial --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                if socket > 2:
+                    do = "./serial --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                if socket == 1:
+                    do = "numactl -N 0 ./serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                if socket == 2:
+                    do = "numactl -N 1 ./serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+
                 p = Popen(do, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 output = p.communicate()
                 mystring = str(output)
@@ -78,9 +107,17 @@ def storeAny(nStreams,maxEvents,cmd):
             big_thru_ave.append(thru_ave)
         
         if cmd == 'cuda_cmd':
-            path = '/data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/'
+            path = cudapath
+            logfile = cudalog
             for j in range(4):
-                do = "CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./cuda --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
+                if socket > 2:
+                    do = gpu_cmd + " ./cuda --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket == 1:
+                    do = gpu_cmd + " numactl -N 0 ./cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket == 2:
+                    do = gpu_cmd + " numactl -N 1 ./cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)  
+
                 p = Popen(do, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 output = p.communicate()
                 mystring = str(output)
@@ -103,9 +140,16 @@ def storeAny(nStreams,maxEvents,cmd):
             big_thru_ave.append(thru_ave)
 
         if cmd =='alps_cmd':
-            path = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
+            path = alpspath
+            logfile = alpslog
             for j in range(4):
-                do = "numactl -N 0 ./alpaka --serial --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket > 2:
+                    do = "./alpaka --serial --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                if socket == 1:
+                    do = "numactl -N 0 ./alpaka --serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                if socket == 2:
+                    do = "numactl -N 1 ./alpaka --serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+
                 p = Popen(do, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 output = p.communicate()
                 mystring = str(output)
@@ -128,9 +172,17 @@ def storeAny(nStreams,maxEvents,cmd):
             big_thru_ave.append(thru_ave)
 
         if cmd == 'alpc_cmd':
-            path = '/data2/user/pfudolig/pixeltrack-standalone/results/alpaka_results/'
+            path = alpcpath
+            logfile = alpclog
             for j in range(4):
-                do = "CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./alpaka --cuda --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
+                if socket > 2:
+                    do = gpu_cmd + " ./alpaka --cuda --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket == 1:
+                    do = gpu_cmd + " numactl -N 0 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket == 2:
+                    do = gpu_cmd + " numactl -N 1 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)  
+
                 p = Popen(do, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 output = p.communicate()
                 mystring = str(output)
@@ -151,9 +203,15 @@ def storeAny(nStreams,maxEvents,cmd):
             big_thru_std.append(thru_std)
             big_time_ave.append(time_ave)
             big_thru_ave.append(thru_ave)
+    
+    print(do)
+    print(path)
+    print(logfile)
+
+'''
+######## Need to generalize this part better
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    #df.to_csv('big.csv')
     csv_title = path + 'avethrudata_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
@@ -164,6 +222,6 @@ def storeAny(nStreams,maxEvents,cmd):
         myfile.write('\n')
         myfile.write('\t' + csv_title)
     return(df)
-    #print(df)
+    #print(df)'''
 
-storeAny(nStreams,maxEvents,cmd)
+storeAny(nStreams,maxEvents,cmd,gpu,socket,nThreads)
