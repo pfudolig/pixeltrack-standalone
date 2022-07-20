@@ -1,2 +1,23 @@
 PixelTrack-Standalone Multiple Plots Command Log
 
+
+2022-07-20 10:46:56.931176
+	results/multiple_results/CUDAAlpakaCuda_TESLA_T4_20000e.png
+2022-07-20 10:46:56.931176
+	results/multiple_results/CUDAAlpakaCuda_TESLA_T4_20000e.png
+2022-07-20 10:49:24.081270
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 10:49:24.081270
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 10:49:24.081270
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 10:49:24.081270
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 11:06:36.077610
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 11:07:02.186367
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 11:09:33.816707
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 11:10:59.428227
+	results/multiple_results/SerialCUDAAlpakaSerial_10000e.png
