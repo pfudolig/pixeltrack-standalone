@@ -1,2 +1,12 @@
 CUDA Command Log
 
+
+2022-07-19 15:36:58.329770
+	Input: CUDA_VISIBLE_DEVICES=2 numactl -N 0 ./cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda2_20s_20000e.csv
+2022-07-19 15:35:01.331979
+	Input: CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda1_20s_20000e.csv
+2022-07-19 23:38:23.845429
+	Input: CUDA_VISIBLE_DEVICES=3 numactl -N 0 ./cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda3_20s_20000e.csv
