@@ -25,3 +25,21 @@ PixelTrack-Standalone Multiple Plots Command Log
 	results/multiple_results/SerialAlpakaSerial_None_10000e.png
 2022-07-20 12:00:47.213502
 	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/CUDAAlpakaCuda_NVIDIA_A10_30000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/CUDAAlpakaCuda_NVIDIA_A10_30000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/CUDAAlpakaCuda_TESLA_V100_30000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/CUDAAlpakaCuda_TESLA_V100_20000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/CUDAAlpakaCuda_NVIDIA_A10_20000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/SerialAlpakaSerial_None_10000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/maderr_SerialAlpakaSerial_None_10000e.png
+2022-07-20 13:45:39.540654
+	results/multiple_results/inderr_SerialAlpakaSerial_None_10000e.png
