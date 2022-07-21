@@ -8,18 +8,17 @@ import statistics
 import mplhep as hep
 import datetime
 
-timestamp = datetime.datetime.now()
-
 parser = argparse.ArgumentParser(description='Serial Information')
-parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run')
-parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process')
-parser.add_argument('--serial', '--Serial', dest='serial', help='Pass Serial Library, can type any argument')
-parser.add_argument('--cuda', '--Cuda', '--CUDA', dest='cuda', help='Pass CUDA Library, can type any argument')
-parser.add_argument('--alpakaserial', '--AlpakaSerial',dest='alps', help='Pass Alpaka Serial Library, can type any argument')
-parser.add_argument('--alpakacuda', '--AlpakaCuda', '--AlpakaCUDA', dest='alpc', help='Pass Alpaka CUDA Library, can type any argument')
-parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin')
-parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (args greater than 2 pass as None)')
+parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run, default = 20')
+parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000')
+parser.add_argument('--serial', '--Serial', dest='serial', action='store_true', help='Pass Serial Library, can type any argument')
+parser.add_argument('--cuda', '--Cuda', '--CUDA', dest='cuda', action='store_true', help='Pass CUDA Library, can type any argument')
+parser.add_argument('--alpakaserial', '--AlpakaSerial',dest='alps', action='store_true', help='Pass Alpaka Serial Library, can type any argument')
+#parser.add_argument('--alpakacuda', '--AlpakaCuda', '--AlpakaCUDA', dest='alpc', help='Pass Alpaka CUDA Library, can type any argument')
+#parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin, default = 1')
+#parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (0 passes as default = 1, args greater than 2 pass as None)')
 args = parser.parse_args()
+
 
 if args.nstreams:
     nStreams = args.nstreams
@@ -30,15 +29,41 @@ if args.nEvents:
 else:
     maxEvents = 10000
 
+none = [False, False, False]
+#if all false, all libraries being passed
+#if all true, no libraries being passed
+
 if args.serial:
     cmd = 'serial_cmd'
+else:
+    none[0] = True
 if args.cuda:
     cmd = 'cuda_cmd'
+else:
+    none[1] = True
 if args.alps:
     cmd = 'alps_cmd'
-if args.alpc:
-    cmd = 'alpc_cmd'
+else:
+    none[2] = True
 
+def check(list):
+    #check if any False values (libraries being passed)
+    #if all False, all libraries passed
+    #if more than 1 False value, multiple libraries passed
+    #if all True, no libraries passed
+    boolean = False
+    app = []
+    for i in range(len(list)):
+        if list[i] == boolean:
+            app.append(i)
+    print(app)
+    if len(app) > 1:
+        raise ValueError('Cannot pass multiple libraries at once')
+    if not app:
+        raise ValueError('Must pass at least one library')
+check(none)
+
+'''
 if args.gpu:
     gpu = args.gpu
 else:
@@ -46,37 +71,9 @@ else:
 if args.pin:
     socket = args.pin
 else:
-    socket = 3
+    socket = 1
 
-if nStreams > 20:
-    raise ValueError('Only 20 cores on this machine')
-if socket == 1 or socket == 2:
-    nThreads = nStreams
-else:
-    nThreads = 40
-
-
-def storeAny(nStreams,maxEvents,cmd,gpu,socket,nThreads):
-
-    for i in range(1,nStreams+1):
-        if cmd == 'serial_cmd':
-            for j in range(4):
-                if socket > 2:
-                    do = "./serial --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
-                if socket == 1:
-                    do = "numactl -N 0 ./serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
-                if socket == 2:
-                    do = "numactl -N 1 ./serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
-
-                p = Popen(do, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-                output = p.communicate()
-                mystring = str(output)
-                parts = mystring.split(' ')
-
-                time = parts[13]
-                thru = parts[16]
-                str = parts[5]
-    print(time)
-    print(throughput)
-
-storeAny(nStreams,maxEvents,cmd,gpu,socket,nThreads)
+if socket == 1 and nStreams > 20 or socket == 2 and nStreams > 20:
+    raise ValueError('One CPU can only run on a maximum of 20 threads')
+if socket == 0:
+    print('Pinning CPU 1 as default')'''

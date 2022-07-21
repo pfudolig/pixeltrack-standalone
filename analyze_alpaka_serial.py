@@ -32,6 +32,8 @@ else:
 
 if socket == 1 and nStreams > 20 or socket ==2 and nStreams > 20:
     raise ValueError('One CPU can only run on a maximum of 20 threads')
+if socket == 0:
+    print('Pinning CPU 1 as default')
 
 
 def storeByStream(nStreams,maxEvents,socket):

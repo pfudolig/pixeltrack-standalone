@@ -13,7 +13,7 @@ logfile = '/data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/alpc_
 timestamp = datetime.datetime.now()
 
 parser = argparse.ArgumentParser(description='Alpaka Cuda Information')
-parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='NNumber of streams to run, default = 20')
+parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run, default = 20')
 parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000')
 parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin, default = 1')
 parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (0 passes as default = 1, args greater than 2 pass as None)')
@@ -33,10 +33,12 @@ else:
 if args.pin:
     socket = args.pin
 else:
-    socket = 3
+    socket = 1
 
 if socket == 1 and nStreams > 20 or socket ==2 and nStreams > 20:
     raise ValueError('One CPU can only run on a maximum of 20 threads')
+if socket == 0:
+    print('Pinning CPU 1 as default')
 
 
 def storeByStream(nStreams,maxEvents,gpu,socket):
