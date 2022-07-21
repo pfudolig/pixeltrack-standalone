@@ -82,7 +82,7 @@ def storeByStream(nStreams,maxEvents,socket,nThreads):
 
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    csv_title = alpakapath + 'csv/4alps_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    csv_title = alpakapath + 'csv/4alps_pin' + str(socket) + '_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
