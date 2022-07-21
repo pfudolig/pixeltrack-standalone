@@ -13,9 +13,9 @@ logfile = '/data2/user/pfudolig/pixeltrack-standalone/results/alps_results/alps_
 timestamp = datetime.datetime.now()
 
 parser = argparse.ArgumentParser(description='Alpaka Information')
-parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of concurrent events')
-parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process')
-parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (args greater than 2 pass as None)')
+parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run, default = 20')
+parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000')
+parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (0 passes as default = 1, args greater than 2 pass as None)')
 args = parser.parse_args()
 if args.nstreams:
     nStreams = args.nstreams
@@ -28,17 +28,13 @@ else:
 if args.pin:
     socket = args.pin
 else:
-    socket = 3
+    socket = 1
 
-if nStreams > 20:
-    raise ValueError('Only 20 cores on this machine')
-if socket == 1 or socket == 2:
-    nThreads = nStreams
-else:
-    nThreads = 40
+if socket == 1 and nStreams > 20 or socket ==2 and nStreams > 20:
+    raise ValueError('One CPU can only run on a maximum of 20 threads')
 
 
-def storeByStream(nStreams,maxEvents,socket,nThreads):
+def storeByStream(nStreams,maxEvents,socket):
     #Loop over various amount of streams for set number of events to record processing time and throughput
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
@@ -50,7 +46,7 @@ def storeByStream(nStreams,maxEvents,socket,nThreads):
         streams = []
         for j in range(4):
             if socket > 2:
-                cmd = "./alpaka --serial --numberOfThreads " + str(nThreads) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
+                cmd = "./alpaka --serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
             if socket == 1:
                 cmd = "numactl -N 0 ./alpaka --serial --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + ' --maxEvents ' + str(maxEvents)
             if socket == 2:
@@ -82,7 +78,7 @@ def storeByStream(nStreams,maxEvents,socket,nThreads):
 
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    csv_title = alpakapath + 'csv/4alps_pin' + str(socket) + '_' + str(maxEvents) + 'e.csv'
+    csv_title = alpakapath + 'csv/4alps_pin' + str(socket) + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
@@ -93,4 +89,4 @@ def storeByStream(nStreams,maxEvents,socket,nThreads):
         myfile.write('\t' + 'Output: ' + csv_title)
     return(df)
 
-user_output = storeByStream(nStreams,maxEvents,socket,nThreads)
+user_output = storeByStream(nStreams,maxEvents,socket)
