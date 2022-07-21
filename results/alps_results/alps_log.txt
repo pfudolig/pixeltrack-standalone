@@ -1,2 +1,12 @@
 Alpaka Serial Command Log
 
+
+2022-07-20 14:30:10.933152
+	Input: numactl -N 0 ./alpaka --serial --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/alps_results/csv/4alps_20s_20000e.csv
+2022-07-20 17:02:20.611311
+	Input: ./alpaka --serial --numberOfThreads 40 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/alps_results/csv/4alps_20s_20000e.csv
+2022-07-20 14:30:43.767065
+	Input: numactl -N 0 ./alpaka --serial --numberOfThreads 20 --numberOfStreams 20 --maxEvents 30000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/alps_results/csv/4alps_20s_30000e.csv

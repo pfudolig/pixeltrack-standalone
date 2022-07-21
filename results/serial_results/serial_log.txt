@@ -4,3 +4,12 @@ Serial Command Log
 2022-07-20 15:58:33.412536
 	Input: ./serial --numberOfThreads 40 --numberOfStreams 20 --maxEvents 5
 	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_pin3_5e.csv
+2022-07-20 14:29:02.988905
+	Input: numactl -N 0 ./serial --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_20s_20000e.csv
+2022-07-20 17:00:48.694568
+	Input: ./serial --numberOfThreads 40 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_pin3_20000e.csv
+2022-07-20 14:29:35.276128
+	Input: numactl -N 0 ./serial --numberOfThreads 20 --numberOfStreams 20 --maxEvents 30000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_20s_30000e.csv
