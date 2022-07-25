@@ -13,3 +13,6 @@ Serial Command Log
 2022-07-20 14:29:35.276128
 	Input: numactl -N 0 ./serial --numberOfThreads 20 --numberOfStreams 20 --maxEvents 30000
 	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_20s_30000e.csv
+2022-07-21 16:38:11.876079
+	Input: ./serial --numberOfThreads 40 --numberOfStreams 40 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/serial_results/csv/4serial_pin3_40s_20000e.csv

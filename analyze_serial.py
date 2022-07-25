@@ -14,7 +14,7 @@ timestamp = datetime.datetime.now()
 
 parser = argparse.ArgumentParser(description='Serial Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run, default = 20')
-parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000'`)
+parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000')
 parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (0 passes as default = 1, args greater than 2 pass as None)')
 args = parser.parse_args()
 

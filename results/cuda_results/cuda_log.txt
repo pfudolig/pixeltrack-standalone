@@ -31,3 +31,9 @@ CUDA Command Log
 2022-07-21 10:48:08.527137
 	Input: CUDA_VISIBLE_DEVICES=1 ./cuda --numberOfThreads 40 --numberOfStreams 40 --maxEvents 20000
 	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda_gpu1_pin3_40s_20000e.csv
+2022-07-21 13:28:48.933333
+	Input: CUDA_VISIBLE_DEVICES=3 ./cuda --numberOfThreads 40 --numberOfStreams 40 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda_gpu3_pin3_40s_20000e.csv
+2022-07-21 16:24:42.464565
+	Input: CUDA_VISIBLE_DEVICES=2 ./cuda --numberOfThreads 40 --numberOfStreams 40 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/4cuda_gpu2_pin3_40s_20000e.csv
