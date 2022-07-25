@@ -55,3 +55,45 @@ PixelTrack-Standalone Multiple Plots Command Log
 	results/multiple_results/SerialAlpakaSerial_None_20000e.png
 2022-07-21 09:43:50.674030
 	results/multiple_results/SerialAlpakaSerial_None_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+
+2022-07-25 09:36:17.978000
+	Inputs: 
+
+2022-07-25 09:36:17.978000
+	Inputs: 
+
+2022-07-25 09:36:17.978000
+	Inputs: 
+
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/serial_results/csv/4serial_pin3_40s_20000e.csv
+		results/alps_results/csv/4alps_pin3_40s_20000e.csv
+	Output: results/multiple_results/SerialAlpakaSerial_None_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/serial_results/csv/4serial_pin3_40s_20000e.csv
+		results/alps_results/csv/4alps_pin3_40s_20000e.csv
+	Output: results/multiple_results/SerialAlpakaSerial_None_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/serial_results/csv/4serial_pin3_40s_20000e.csv
+		results/alps_results/csv/4alps_pin3_40s_20000e.csv
+	Output: results/multiple_results/SerialAlpakaSerial_None_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/cuda_results/csv/4cuda_gpu3_pin3_40s_20000e.csv
+		results/alpc_results/csv/4alpc3_pin3_40s_20000e.csv
+	Output: results/multiple_results/CUDAAlpakaCuda_TESLA_T4_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/cuda_results/csv/4cuda_gpu2_pin3_40s_20000e.csv
+		results/alpc_results/csv/4alpc2_pin3_40s_20000e.csv
+	Output: results/multiple_results/CUDAAlpakaCuda_TESLA_V100_20000e.png
+2022-07-25 09:36:17.978000
+	Inputs: 
+		results/cuda_results/csv/4cuda_gpu1_pin3_40s_20000e.csv
+		results/alpc_results/csv/4alpc1_pin3_40s_20000e.csv
+	Output: results/multiple_results/CUDAAlpakaCuda_NVIDIA_A10_20000e.png
