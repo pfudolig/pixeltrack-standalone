@@ -42,7 +42,7 @@ if socket == 0:
     print('Pinning CPU 1 as default')
 
 if args.disable:
-    alloc = args.alloc
+    alloc = args.disable
 else:
     alloc = "None"
 
@@ -52,9 +52,9 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
     big_ev = []
-    thds = [1,2,4,8,12,16,20]
+    pick = [1,2,4,8,12,16,20]
     
-    for i in thds:
+    for i in pick:
         time = []
         throughput = []
         streams = []
@@ -70,6 +70,13 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
             output = p.communicate()
             mystring = str(output)
             parts = mystring.split(' ')
+
+    print(mystring)
+    #print(float(parts[18]))
+    #print(float(parts[19]))
+    #print(float(parts[10]))
+
+'''
             time.append(float(parts[22]))
             throughput.append(float(parts[25]))
             streams.append(float(parts[10]))
@@ -101,6 +108,6 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
         myfile.write('\t' + 'Input: ' + cmd)
         myfile.write('\n')
         myfile.write('\t' + 'Output: ' + csv_title)
-    return(df)
+    return(df)'''
 
 user_output = storeByStream(nStreams,maxEvents,gpu,socket,alloc)

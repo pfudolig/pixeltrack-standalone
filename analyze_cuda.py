@@ -42,21 +42,22 @@ if socket == 0:
     print('Pinning CPU 1 as default')
 
 if args.disable:
-    alloc = args.alloc
+    alloc = args.disable
 else:
     alloc = "None"
 
-def storeByStream(nStreams,maxEvents,gpu,socket):
+def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
     #Loop over various amount of streams for set number of events to record processing time and throughput
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
     big_ev = []
+    pick = [1,2,4,8,12,16,20]
 
-    for i in range(1,nStreams+1):
+    for i in pick:
         time = []
         throughput = []
         streams = []
-        for j in range(4):
+        for j in range(3):
             gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
             if socket > 2:
                 cmd = gpu_cmd + " ./cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
@@ -68,6 +69,7 @@ def storeByStream(nStreams,maxEvents,gpu,socket):
             output = p.communicate()
             mystring = str(output)
             parts = mystring.split(' ')
+
             time.append(float(parts[15]))
             throughput.append(float(parts[18]))
             streams.append(float(parts[7]))
@@ -90,7 +92,7 @@ def storeByStream(nStreams,maxEvents,gpu,socket):
 
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    csv_title = cudapath + 'csv/4cuda_gpu' + str(gpu) + '_pin' + str(socket) + '_dis' + alloc + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    csv_title = cudapath + 'csv/3cuda_gpu' + str(gpu) + '_pin' + str(socket) + '_dis' + alloc + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
