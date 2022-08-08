@@ -52,12 +52,13 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
     big_ev = []
-
-    for i in range(1,nStreams+1):
+    thds = [1,2,4,8,12,16,20]
+    
+    for i in thds:
         time = []
         throughput = []
         streams = []
-        for j in range(4):
+        for j in range(3):
             gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
             if socket > 2:
                 cmd = gpu_cmd + " ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
