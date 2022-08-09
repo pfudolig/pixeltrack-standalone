@@ -34,3 +34,6 @@ Alpaka CUDA Command Log
 2022-07-21 16:27:05.234029
 	Input: CUDA_VISIBLE_DEVICES=1 ./alpaka --cuda --numberOfThreads 40 --numberOfStreams 40 --maxEvents 20000
 	Output: /data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/csv/4alpc1_pin3_40s_20000e.csv
+2022-08-08 16:46:18.244066
+	Input: CUDA_VISIBLE_DEVICES=2 numactl -N 0 ./alpaka --cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 20000
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/alpc_results/csv/alpc_g2_pin1_disNone_20s_20000e.csv

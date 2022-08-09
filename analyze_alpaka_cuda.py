@@ -70,13 +70,6 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
             output = p.communicate()
             mystring = str(output)
             parts = mystring.split(' ')
-
-    print(mystring)
-    #print(float(parts[18]))
-    #print(float(parts[19]))
-    #print(float(parts[10]))
-
-'''
             time.append(float(parts[22]))
             throughput.append(float(parts[25]))
             streams.append(float(parts[10]))
@@ -108,6 +101,6 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
         myfile.write('\t' + 'Input: ' + cmd)
         myfile.write('\n')
         myfile.write('\t' + 'Output: ' + csv_title)
-    return(df)'''
+    return(df)
 
 user_output = storeByStream(nStreams,maxEvents,gpu,socket,alloc)
