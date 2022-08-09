@@ -15,7 +15,7 @@ timestamp = datetime.datetime.now()
 parser = argparse.ArgumentParser(description='Alpaka Cuda Information')
 parser.add_argument('--numberOfStreams', dest='nstreams', type=int, help='Number of streams to run, default = 20')
 parser.add_argument('--maxEvents', dest='nEvents', type=int, help='Number of events to process, default = 10000')
-parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin, default = 1')
+parser.add_argument('--GPU', dest='gpu', type=int, help='GPU Device to pin, default = 0')
 parser.add_argument('--socket', dest='pin', type=int, help='Which sockets to pin (0 passes as default = 1, args greater than 2 pass as None)')
 parser.add_argument('--disable', dest='disable', type=str, help='Allocator to disable', default = "None")
 args = parser.parse_args()
@@ -30,7 +30,7 @@ else:
 if args.gpu:
     gpu = args.gpu
 else:
-    gpu = 1
+    gpu = 0 #doens't default to 1
 if args.pin:
     socket = args.pin
 else:
@@ -40,6 +40,9 @@ if socket == 1 and nStreams > 20 or socket == 2 and nStreams > 20:
     raise ValueError('One CPU can only run on a maximum of 20 threads')
 if socket == 0:
     print('Pinning CPU 1 as default')
+if gpu > 2:
+    raise ValueError('Only 3 GPUs on this machine')
+
 
 if args.disable:
     alloc = args.disable
@@ -52,47 +55,79 @@ def storeByStream(nStreams,maxEvents,gpu,socket,alloc):
     big_time, big_thru, big_str = [], [], []
     big_time_std, big_thru_std, big_time_ave, big_thru_ave = [], [], [], []
     big_ev = []
-    pick = [1,2,4,8,12,16,20]
+    gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
+    pick_cpupin = [1,2,4,8,12,16,20]
+    pick_nopin = [1,2,4,8,12,16,20,24,28,32,36,40]
     
-    for i in pick:
-        time = []
-        throughput = []
-        streams = []
-        for j in range(3):
-            gpu_cmd = "CUDA_VISIBLE_DEVICES=" + str(gpu)
-            if socket > 2:
-                cmd = gpu_cmd + " ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
-            if socket == 1:
-                cmd = gpu_cmd + " numactl -N 0 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
-            if socket == 2:
-                cmd = gpu_cmd + " numactl -N 1 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)            
-            p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-            output = p.communicate()
-            mystring = str(output)
-            parts = mystring.split(' ')
-            time.append(float(parts[22]))
-            throughput.append(float(parts[25]))
-            streams.append(float(parts[10]))
+    if socket == 1 or socket == 2:
+        for i in pick_cpupin:
+            time = []
+            throughput = []
+            streams = []
+            for j in range(3):
+                if socket == 1:
+                    cmd = gpu_cmd + " numactl -N 0 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)
+                if socket == 2:
+                    cmd = gpu_cmd + " numactl -N 1 ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)            
+                p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                output = p.communicate()
+                mystring = str(output)
+                parts = mystring.split(' ')
+                time.append(float(parts[22]))
+                throughput.append(float(parts[25]))
+                streams.append(float(parts[10]))
 
-        time_std = statistics.stdev(time)
-        thru_std = statistics.stdev(throughput)
-        time_ave = statistics.mean(time)
-        thru_ave = statistics.mean(throughput)
+            time_std = statistics.stdev(time)
+            thru_std = statistics.stdev(throughput)
+            time_ave = statistics.mean(time)
+            thru_ave = statistics.mean(throughput)
 
-        streamval = streams[0]
-        big_time.append(time)
-        big_thru.append(throughput)
-        big_str.append(streamval)
-        big_ev.append(maxEvents)
+            streamval = streams[0]
+            big_time.append(time)
+            big_thru.append(throughput)
+            big_str.append(streamval)
+            big_ev.append(maxEvents)
 
-        big_time_std.append(time_std)
-        big_thru_std.append(thru_std)
-        big_time_ave.append(time_ave)
-        big_thru_ave.append(thru_ave)
+            big_time_std.append(time_std)
+            big_thru_std.append(thru_std)
+            big_time_ave.append(time_ave)
+            big_thru_ave.append(thru_ave)
+    
+    if socket > 2:
+        for i in pick_nopin:
+            time = []
+            throughput = []
+            streams = []
+            for j in range(3):
+                if socket > 2:
+                    cmd = gpu_cmd + " ./alpaka --cuda --numberOfThreads " + str(i) + " --numberOfStreams " + str(i) + " --maxEvents " + str(maxEvents)            
+                p = Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                output = p.communicate()
+                mystring = str(output)
+                parts = mystring.split(' ')
+                time.append(float(parts[22]))
+                throughput.append(float(parts[25]))
+                streams.append(float(parts[10]))
+
+            time_std = statistics.stdev(time)
+            thru_std = statistics.stdev(throughput)
+            time_ave = statistics.mean(time)
+            thru_ave = statistics.mean(throughput)
+
+            streamval = streams[0]
+            big_time.append(time)
+            big_thru.append(throughput)
+            big_str.append(streamval)
+            big_ev.append(maxEvents)
+
+            big_time_std.append(time_std)
+            big_thru_std.append(thru_std)
+            big_time_ave.append(time_ave)
+            big_thru_ave.append(thru_ave)
 
     d = {'nEvents': big_ev, 'nStreams': big_str, 'time': big_time, 'time_std': big_time_std, 'time_ave': big_time_ave, 'throughput': big_thru, 'tput_std': big_thru_std, 'tput_ave': big_thru_ave}
     df = pd.DataFrame(data=d)
-    csv_title = alpakapath + 'csv/alpc_g' + str(gpu) + '_pin' + str(socket) + '_dis' + alloc + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
+    csv_title = alpakapath + 'csv/3alpc_g' + str(gpu) + '_pin' + str(socket) + '_dis' + alloc + '_' + str(nStreams) + 's_' + str(maxEvents) + 'e.csv'
     df.to_csv(csv_title)
     with open(logfile,"a") as myfile:
         myfile.write('\n')
