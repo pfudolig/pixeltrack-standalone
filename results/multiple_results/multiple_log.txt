@@ -102,3 +102,59 @@ PixelTrack-Standalone Multiple Plots Command Log
 		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
 		results/alpc_results/csv/alpc_g2_pin1_disNone_20s_20000e.csv
 	Output: results/multiple_results/CUDAAlpakaCuda_TESLA_T4_20000e.png
+2022-08-10 12:36:32.945596
+	Inputs: 
+
+2022-08-10 12:36:32.945596
+	Inputs: 
+
+2022-08-10 12:36:32.945596
+	Inputs: 
+
+2022-08-10 12:36:32.945596
+	Inputs: 
+
+2022-08-10 12:36:32.945596
+	Inputs: 
+
+2022-08-10 12:36:32.945596
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
+2022-08-10 12:36:32.945596
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA Cache EnabledCUDA Cache Disabled_TESLA_T4_20000e.png
+2022-08-10 15:56:15.308540
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
+2022-08-10 15:56:15.308540
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
+2022-08-10 15:56:15.308540
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
+2022-08-10 15:56:15.308540
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
+2022-08-10 15:56:15.308540
+	Inputs: 
+		results/cuda_results/csv/3cuda_gpu2_pin1_disNone_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+		results/cuda_results/csv/3cuda_gpu2_pin1_disCache_20s_20000e.csv
+	Output: results/multiple_results/CUDACUDA_NoneCacheBoth_gpuTESLA_T4_20000e.png
