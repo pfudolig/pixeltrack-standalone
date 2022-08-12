@@ -1,0 +1,4 @@
+
+2022-08-11 16:38:44.200352
+	Input: CUDA_VISIBLE_DEVICES=1 numactl -N 0 ./cuda --numberOfThreads 20 --numberOfStreams 20 --maxEvents 5
+	Output: /data2/user/pfudolig/pixeltrack-standalone/results/cuda_results/csv/cuda_gpu_1_pin1_20s_5e.csv
