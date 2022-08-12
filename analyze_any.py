@@ -4,7 +4,6 @@ import subprocess
 from subprocess import Popen
 import sys
 import pandas as pd
-import matplotlib.pyplot as plt
 import argparse
 import statistics
 import numpy as np
